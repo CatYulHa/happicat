@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Introduction — 이은성 · 하율</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --bg:#0a0d14;
+    --bg-2:#0f131d;
+    --panel:rgba(255,255,255,.045);
+    --panel-2:rgba(255,255,255,.028);
+    --line:rgba(255,255,255,.10);
+    --line-2:rgba(255,255,255,.06);
+    --tx:#eef2f8;
+    --tx-2:#a4aec2;
+    --tx-3:#6f7a90;
+    --pm:#7c9cff;
+    --pm-2:#4f6ff0;
+    --dev:#3ddc97;
+    --dev-2:#12b981;
+    --gold:#e5b567;
+    --r:18px;
+    --ease:cubic-bezier(.22,.9,.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    color:var(--tx);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 620px at 12% -8%, rgba(79,111,240,.20), transparent 62%),
+      radial-gradient(760px 560px at 92% 108%, rgba(18,185,129,.15), transparent 60%),
+      radial-gradient(1000px 700px at 50% 50%, rgba(255,255,255,.025), transparent 70%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(circle at 50% 45%, #000 25%, transparent 78%);
+    -webkit-mask-image:radial-gradient(circle at 50% 45%, #000 25%, transparent 78%);
+  }
+
+  /* ---------- deck ---------- */
+  .deck{position:relative;z-index:1;height:100vh;width:100%}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:76px 7vw 96px;
+    opacity:0;visibility:hidden;
+    transform:translateY(22px) scale(.992);
+    transition:opacity .5s var(--ease), transform .6s var(--ease), visibility .6s;
+    overflow-y:auto;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  .slide::-webkit-scrollbar{width:6px}
+  .slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:9px}
+
+  .slide.active .rise{animation:rise .62s var(--ease) both}
+  .slide.active .rise:nth-child(1){animation-delay:.04s}
+  .slide.active .rise:nth-child(2){animation-delay:.10s}
+  .slide.active .rise:nth-child(3){animation-delay:.16s}
+  .slide.active .rise:nth-child(4){animation-delay:.22s}
+  .slide.active .rise:nth-child(5){animation-delay:.28s}
+  .slide.active .rise:nth-child(6){animation-delay:.34s}
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition-duration:.01ms!important}
+  }
+
+  /* ---------- shared ---------- */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:11.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--tx-3);
+    padding:7px 14px;border:1px solid var(--line);border-radius:999px;
+    background:var(--panel-2);
+    margin-bottom:22px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--pm);box-shadow:0 0 12px var(--pm)}
+  h1{font-size:clamp(38px,6.4vw,84px);font-weight:800;letter-spacing:-.035em;line-height:1.03}
+  h2{font-size:clamp(26px,3.5vw,44px);font-weight:750;letter-spacing:-.03em;line-height:1.14;margin-bottom:10px}
+  .sub{color:var(--tx-2);font-size:clamp(14px,1.35vw,17px);line-height:1.75;max-width:62ch;font-weight:400}
+  .grad{background:linear-gradient(100deg,#fff 5%,#9fb4ff 48%,#3ddc97 96%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hr{height:1px;background:linear-gradient(90deg,var(--line),transparent);margin:26px 0}
+
+  /* ---------- cards ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px}
+  .card{
+    position:relative;border:1px solid var(--line);border-radius:var(--r);
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    padding:26px 26px 24px;
+    transition:border-color .35s var(--ease), transform .35s var(--ease), background .35s var(--ease);
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--accent,var(--pm)),transparent 78%);
+    opacity:.85;
+  }
+  .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.2)}
+  .card.pm{--accent:var(--pm)}
+  .card.dev{--accent:var(--dev)}
+
+  .who{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px}
+  .avatar{
+    width:56px;height:56px;flex:0 0 56px;border-radius:15px;
+    display:grid;place-items:center;font-size:21px;font-weight:800;letter-spacing:-.02em;
+    color:#0a0d14;
+  }
+  .pm .avatar{background:linear-gradient(145deg,#a7bcff,#4f6ff0)}
+  .dev .avatar{background:linear-gradient(145deg,#7ff0c0,#12b981)}
+  .who .nm{font-size:22px;font-weight:750;letter-spacing:-.02em;line-height:1.25}
+  .who .en{font-size:12.5px;color:var(--tx-3);margin-top:3px;letter-spacing:.01em}
+  .role{
+    display:inline-block;margin-top:9px;font-size:11.5px;font-weight:700;letter-spacing:.09em;
+    padding:5px 11px;border-radius:7px;text-transform:uppercase;
+  }
+  .pm .role{background:rgba(124,156,255,.14);color:#a9bcff;border:1px solid rgba(124,156,255,.3)}
+  .dev .role{background:rgba(61,220,151,.13);color:#6fe6b4;border:1px solid rgba(61,220,151,.3)}
+
+  .meta{display:grid;grid-template-columns:74px 1fr;gap:11px 16px;font-size:13.5px;line-height:1.62}
+  .meta dt{color:var(--tx-3);font-weight:500;font-size:12.5px;padding-top:1px}
+  .meta dd{color:var(--tx);font-weight:450}
+  .meta dd b{font-weight:650}
+
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+  .tag{
+    font-size:11.5px;font-weight:550;padding:5px 10px;border-radius:7px;
+    background:rgba(255,255,255,.055);border:1px solid var(--line-2);color:var(--tx-2);
+    white-space:nowrap;
+  }
+  .pm .tag.key{background:rgba(124,156,255,.12);border-color:rgba(124,156,255,.26);color:#b3c4ff}
+  .dev .tag.key{background:rgba(61,220,151,.11);border-color:rgba(61,220,151,.26);color:#7fe9bd}
+
+  /* ---------- profile slide ---------- */
+  .prof{display:grid;grid-template-columns:minmax(280px,.85fr) 1.15fr;gap:38px;align-items:start}
+  @media(max-width:1080px){.prof{grid-template-columns:1fr;gap:26px}}
+
+  .idcard{
+    border:1px solid var(--line);border-radius:20px;padding:28px;
+    background:linear-gradient(165deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+    position:relative;overflow:hidden;
+  }
+  .idcard::after{
+    content:"";position:absolute;width:220px;height:220px;border-radius:50%;
+    right:-90px;top:-90px;filter:blur(46px);opacity:.5;
+    background:var(--accent,var(--pm));
+  }
+  .idcard.pm{--accent:#4f6ff0}
+  .idcard.dev{--accent:#12b981}
+  .idcard .big{font-size:40px;font-weight:800;letter-spacing:-.035em;line-height:1.06;position:relative}
+  .idcard .roman{font-size:13px;color:var(--tx-3);margin-top:6px;letter-spacing:.06em;position:relative}
+  .idcard .pos{
+    margin-top:16px;font-size:14px;font-weight:650;position:relative;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .idcard.pm .pos{color:#a9bcff}
+  .idcard.dev .pos{color:#6fe6b4}
+  .idcard .pos::before{content:"";width:22px;height:2px;border-radius:2px;background:currentColor}
+  .facts{margin-top:22px;border-top:1px solid var(--line-2);padding-top:18px;position:relative}
+  .fact{display:flex;justify-content:space-between;gap:14px;padding:8px 0;font-size:13px;border-bottom:1px dashed var(--line-2)}
+  .fact:last-child{border-bottom:0}
+  .fact .k{color:var(--tx-3);flex:0 0 auto}
+  .fact .v{color:var(--tx);text-align:right;font-weight:550;word-break:keep-all}
+  .fact .v a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+  .fact .v a:hover{border-color:currentColor}
+
+  /* ---------- timeline ---------- */
+  .tl{position:relative;padding-left:24px}
+  .tl::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--accent,var(--pm)),transparent)}
+  .tl.pm{--accent:rgba(124,156,255,.55)}
+  .tl.dev{--accent:rgba(61,220,151,.5)}
+  .ti{position:relative;padding:0 0 20px}
+  .ti:last-child{padding-bottom:0}
+  .ti::before{
+    content:"";position:absolute;left:-23px;top:6px;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--tx-3);
+  }
+  .ti.now::before{border-color:var(--dot,var(--pm));box-shadow:0 0 0 4px rgba(124,156,255,.14)}
+  .tl.dev .ti.now::before{--dot:var(--dev);box-shadow:0 0 0 4px rgba(61,220,151,.14)}
+  .ti .when{font-size:11.5px;color:var(--tx-3);font-weight:600;letter-spacing:.05em;font-variant-numeric:tabular-nums}
+  .ti .what{font-size:15.5px;font-weight:700;letter-spacing:-.015em;margin-top:3px}
+  .ti .what .co{color:var(--tx-2);font-weight:500;font-size:13.5px}
+  .ti .desc{font-size:13px;color:var(--tx-2);line-height:1.66;margin-top:6px}
+  .ti .desc li{margin-left:15px;padding-left:2px}
+  .ti .desc li::marker{color:var(--tx-3)}
+  .badge-now{
+    display:inline-block;font-size:10px;font-weight:750;letter-spacing:.1em;
+    padding:3px 7px;border-radius:5px;margin-left:8px;vertical-align:2px;
+  }
+  .tl.pm .badge-now{background:rgba(124,156,255,.16);color:#a9bcff}
+  .tl.dev .badge-now{background:rgba(61,220,151,.15);color:#6fe6b4}
+
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+  @media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{
+    border:1px solid var(--line-2);border-radius:14px;padding:18px 16px;
+    background:var(--panel-2);
+  }
+  .stat .n{font-size:clamp(22px,2.5vw,31px);font-weight:800;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat.pm .n{color:#a9bcff}
+  .stat.dev .n{color:#6fe6b4}
+  .stat .l{font-size:12px;color:var(--tx-2);margin-top:9px;line-height:1.5;word-break:keep-all}
+
+  /* ---------- skills ---------- */
+  .skills{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:900px){.skills{grid-template-columns:1fr}}
+  .sk{border:1px solid var(--line-2);border-radius:14px;padding:18px;background:var(--panel-2)}
+  .sk h4{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tx-3);margin-bottom:12px}
+
+  /* ---------- synergy ---------- */
+  .syn{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;margin-top:6px}
+  @media(max-width:900px){.syn{grid-template-columns:1fr;gap:16px}}
+  .syn .mid{
+    display:grid;place-items:center;width:88px;height:88px;border-radius:50%;
+    border:1px dashed var(--line);color:var(--tx-2);font-size:11px;font-weight:700;
+    letter-spacing:.1em;text-align:center;line-height:1.4;
+    background:radial-gradient(circle,rgba(255,255,255,.05),transparent 70%);
+  }
+  @media(max-width:900px){.syn .mid{justify-self:center}}
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
+  @media(max-width:900px){.flow{grid-template-columns:repeat(2,1fr)}}
+  .step{border:1px solid var(--line-2);border-radius:13px;padding:16px;background:var(--panel-2);position:relative}
+  .step .no{font-size:11px;font-weight:800;color:var(--tx-3);letter-spacing:.1em}
+  .step .ti2{font-size:14.5px;font-weight:700;margin-top:7px;letter-spacing:-.015em}
+  .step .de{font-size:12px;color:var(--tx-2);margin-top:6px;line-height:1.6;word-break:keep-all}
+  .step .own{
+    position:absolute;top:14px;right:14px;font-size:10px;font-weight:750;
+    padding:3px 7px;border-radius:5px;letter-spacing:.06em;
+  }
+  .own.p{background:rgba(124,156,255,.15);color:#a9bcff}
+  .own.d{background:rgba(61,220,151,.14);color:#6fe6b4}
+  .own.b{background:rgba(229,181,103,.14);color:#e5b567}
+
+  /* ---------- contact ---------- */
+  .cts{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:10px}
+  @media(max-width:820px){.cts{grid-template-columns:1fr}}
+  .ct{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--panel-2)}
+  .ct .nm2{font-size:19px;font-weight:750;letter-spacing:-.02em}
+  .ct .rl{font-size:12px;margin-top:5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase}
+  .ct.pm .rl{color:#a9bcff}.ct.dev .rl{color:#6fe6b4}
+  .ct ul{list-style:none;margin-top:16px;display:grid;gap:9px}
+  .ct li{display:flex;gap:11px;font-size:13.5px;align-items:baseline}
+  .ct li span{color:var(--tx-3);flex:0 0 62px;font-size:12px}
+  .ct a{color:var(--tx);text-decoration:none;border-bottom:1px solid var(--line);word-break:break-all}
+  .ct a:hover{border-color:currentColor}
+
+  /* ---------- chrome ---------- */
+  .top{
+    position:fixed;top:0;left:0;right:0;z-index:20;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 7vw;font-size:12px;color:var(--tx-3);
+    pointer-events:none;
+  }
+  .top .brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:.04em;color:var(--tx-2)}
+  .top .brand i{width:7px;height:7px;border-radius:2px;background:linear-gradient(135deg,var(--pm),var(--dev));display:block}
+  .prog{position:fixed;top:0;left:0;height:2px;z-index:30;background:linear-gradient(90deg,var(--pm),var(--dev));transition:width .45s var(--ease);width:0}
+
+  .nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:20;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 7vw;
+  }
+  .dots{display:flex;gap:8px;align-items:center}
+  .dots button{
+    width:8px;height:8px;border-radius:50%;border:0;padding:0;cursor:pointer;
+    background:rgba(255,255,255,.18);transition:all .3s var(--ease);
+  }
+  .dots button:hover{background:rgba(255,255,255,.4)}
+  .dots button[aria-current="true"]{width:26px;border-radius:5px;background:linear-gradient(90deg,var(--pm),var(--dev))}
+  .arrows{display:flex;gap:9px}
+  .arrows button{
+    width:38px;height:38px;border-radius:11px;cursor:pointer;
+    border:1px solid var(--line);background:var(--panel-2);color:var(--tx-2);
+    display:grid;place-items:center;transition:all .25s var(--ease);
+  }
+  .arrows button:hover:not(:disabled){background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+  .arrows button:disabled{opacity:.28;cursor:default}
+  .arrows svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .counter{font-size:12px;color:var(--tx-3);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+  .hint{font-size:11px;color:var(--tx-3);opacity:.75}
+  @media(max-width:760px){
+    .grid2{grid-template-columns:1fr}
+    .slide{padding:70px 6vw 110px}
+    .hint{display:none}
+    .nav{flex-wrap:wrap;gap:12px;justify-content:center}
+  }
+  @media print{
+    body{overflow:visible;background:#fff;color:#000}
+    .slide{position:static;opacity:1;visibility:visible;transform:none;page-break-after:always;min-height:100vh}
+    .nav,.top,.prog{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+
+<header class="top">
+  <div class="brand"><i></i> TEAM Happi Cat</div>
+  <div class="hint">← → 또는 스페이스로 이동</div>
+</header>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · Cover -->
+  <section class="slide active">
+    <div class="rise"><span class="eyebrow"><span class="dot"></span> Team Introduction · 2026</span></div>
+    <h1 class="rise"><span class="grad">데이터에서 실행까지</span></h1>
+    <div class="hr rise"></div>
+    <p class="sub rise">
+      비즈니스 문제를 데이터로 정의하는 <b>PM 이은성</b>과, 그 정의를 자동화된 시스템으로 구현하는
+      <br>
+      <b>개발 하율</b>. 문제 정의 · 지표 설계 · 프로덕트 구현이 한 팀 안에서 끊김 없이 이어집니다.
+    </p>
+    <div class="stats rise" style="max-width:860px">
+      <div class="stat pm"><div class="n">2</div><div class="l">멤버 — PM 1 · 개발 1</div></div>
+      <div class="stat dev"><div class="n">4</div><div class="l">수상 이력 합계</div></div>
+      <div class="stat dev"><div class="n">KR</div><div class="l">국적 — 대한민국 (2인)</div></div>
+    </div>
+  </section>
+
+  <!-- 2 · At a glance -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot"></span> 01 · At a Glance</span></div>
+    <h2 class="rise">팀 구성</h2>
+    <p class="sub rise" style="margin-bottom:24px">이름 · 역할 · 국적 · 경력 · 핵심 강점 요약</p>
+
+    <div class="grid2 rise">
+      <article class="card pm">
+        <div class="who">
+          <div class="avatar">EL</div>
+          <div>
+            <div class="nm">이은성</div>
+            <div class="en">Eunseong Lee</div>
+            <div class="role">BusinessData Analyst · Product Manager</div>
+          </div>
+        </div>
+        <dl class="meta">
+          <dt>국적</dt><dd>대한민국 <span style="color:var(--tx-3)">(Republic of Korea)</span></dd>
+          <dt>경력</dt><dd><b>약 4년</b> · Data / Business Analyst</dd>
+          <dt>현직</dt><dd>Gmarket &amp; AliExpress JV — Business Analyst</dd>
+          <dt>학력</dt><dd>연세대학교 창의기술경영 · 사학 (B.S./B.A.)</dd>
+          <dt>강점</dt>
+          <dd>
+            <div class="tags">
+              <span class="tag key">C-Level 지표 설계</span>
+              <span class="tag key">데이터 기반 의사결정</span>
+              <span class="tag">SQL · Python</span>
+              <span class="tag">이상탐지 로직 설계</span>
+              <span class="tag">비용 최적화</span>
+              <span class="tag">TOEIC 990</span>
+            </div>
+          </dd>
+        </dl>
+      </article>
+
+      <article class="card dev">
+        <div class="who">
+          <div class="avatar">YH</div>
+          <div>
+            <div class="nm">하 율</div>
+            <div class="en">Yul Ha</div>
+            <div class="role">Developer · Engineering</div>
+          </div>
+        </div>
+        <dl class="meta">
+          <dt>국적</dt><dd>대한민국 <span style="color:var(--tx-3)">(Republic of Korea)</span></dd>
+          <dt>경력</dt><dd><b>2년+</b> 자동화/개발 · 산업 현장 관리 8년</dd>
+          <dt>현직</dt><dd>Wyatt — AI Engineer <span style="color:var(--tx-3)">/ Coupang Eats — Automation Engineer</span></dd>
+          <dt>학력</dt><dd>서울사이버대학교 컴퓨터공학과</dd>
+          <dt>강점</dt>
+          <dd>
+            <div class="tags">
+              <span class="tag key">업무 자동화 설계</span>
+              <span class="tag key">AI Agent · Text-to-SQL</span>
+              <span class="tag">Full-stack (React · FastAPI)</span>
+              <span class="tag">ML / 프롬프트 엔지니어링</span>
+              <span class="tag">사내 시스템 · 대시보드</span>
+            </div>
+          </dd>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <!-- 3 · Eunseong profile -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot"></span> 02 · Product Manager</span></div>
+    <div class="prof rise">
+      <div class="idcard pm">
+        <div class="big">이은성</div>
+        <div class="roman">EUNSEONG LEE</div>
+        <div class="pos">BusinessData Analyst</div>
+        <div class="facts">
+          <div class="fact"><span class="k">국적</span><span class="v">대한민국</span></div>
+          <div class="fact"><span class="k">역할</span><span class="v">PM · 기획 / 지표 / 의사결정</span></div>
+          <div class="fact"><span class="k">경력</span><span class="v">약 4년</span></div>
+          <div class="fact"><span class="k">전문</span><span class="v">Data Analytics · BI</span></div>
+          <div class="fact"><span class="k">학력</span><span class="v">연세대학교 (2012–2018)</span></div>
+          <div class="fact"><span class="k">어학</span><span class="v">TOEIC 990 / OPIc AL</span></div>
+          <div class="fact"><span class="k">자격</span><span class="v">빅데이터분석기사 · SQLD · ADsP</span></div>
+          <div class="fact"><span class="k">포트폴리오</span><span class="v"><a href="https://eunseongportfolio.vercel.app" target="_blank" rel="noopener">eunseongportfolio.vercel.app</a></span></div>
+        </div>
+      </div>
+
+      <div>
+        <h2 style="font-size:clamp(22px,2.6vw,32px)">복잡한 데이터를 실행 가능한 전략으로</h2>
+        <p class="sub" style="margin-bottom:22px">
+          SQL과 Python으로 비용 · 프로세스 · 성과를 최적화합니다. 전사 KPI 체계를 세우고,
+          현업이 바로 움직일 수 있는 형태로 인사이트를 전달하는 것이 강점입니다.
+        </p>
+        <div class="tl pm">
+          <div class="ti now">
+            <div class="when">2025.12 — 현재</div>
+            <div class="what">Business Analyst <span class="co">· Gmarket &amp; AliExpress JV</span><span class="badge-now">NOW</span></div>
+            <ul class="desc">
+              <li>CEO 직속 BI 조직에서 전사 KPI · 대시보드 체계 수립</li>
+              <li>데이터 기반 예측 모델 및 선제적 리스크 대응 프레임워크 구축</li>
+            </ul>
+          </div>
+          <div class="ti">
+            <div class="when">2023.01 — 2025.02</div>
+            <div class="what">Program Management Specialist <span class="co">· Coupang Eats</span></div>
+            <ul class="desc">
+              <li>실시간 이상탐지 로직 설계 — 주문량 2.6배 증가에도 운영 인력 유지</li>
+              <li>ML 적용으로 AUC 0.98 달성, 탐지 실패율 17%p 감소</li>
+              <li>전국 단위 주간 대시보드로 매장·배달 이슈 65% 분류</li>
+            </ul>
+          </div>
+          <div class="ti">
+            <div class="when">2022.03 — 2023.01</div>
+            <div class="what">Monetization Operations Manager <span class="co">· Buzzvil</span></div>
+            <ul class="desc">
+              <li>삼성페이 · 카카오뱅크 등 클라이언트 광고 매출 75% 성장</li>
+            </ul>
+          </div>
+          <div class="ti">
+            <div class="when">2018.11 — 2019.08</div>
+            <div class="what">Product Owner Assistant <span class="co">· Kakao 광고</span></div>
+            <ul class="desc">
+              <li>키워드 3만 건+ 재구조화로 CTR 10% 개선, ROAS 465% 달성</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Eunseong impact -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot"></span> 02 · PM 이은성 — Impact</span></div>
+    <h2 class="rise">숫자로 보는 성과</h2>
+    <p class="sub rise" style="margin-bottom:6px">지표를 정의하고, 그 지표를 실제로 움직여 온 기록입니다.</p>
+    <div class="stats rise">
+      <div class="stat pm"><div class="n">0.98</div><div class="l">이상탐지 모델 AUC · 탐지 실패율 17%p 감소</div></div>
+      <div class="stat pm"><div class="n">2.6×</div><div class="l">주문량 증가에도 운영 인력 유지</div></div>
+      <div class="stat pm"><div class="n">83%</div><div class="l">정산 처리 시간 단축 (SOP 정립)</div></div>
+      <div class="stat pm"><div class="n">91%</div><div class="l">주요 고객사 응대 시간 단축</div></div>
+      <div class="stat pm"><div class="n">75%</div><div class="l">Buzzvil 광고 매출 성장</div></div>
+      <div class="stat pm"><div class="n">156%</div><div class="l">애드네트워크 단가 최적화 후 매출 증가</div></div>
+      <div class="stat pm"><div class="n">27%</div><div class="l">배달 비용 절감 (건당 최대 1,362원)</div></div>
+      <div class="stat pm"><div class="n">465%</div><div class="l">Kakao 제휴 타겟팅 ROAS</div></div>
+    </div>
+    <div class="hr rise"></div>
+    <div class="skills rise">
+      <div class="sk">
+        <h4>Core Skill</h4>
+        <div class="tags">
+          <span class="tag">SQL</span><span class="tag">Python</span><span class="tag">BI Tool</span>
+          <span class="tag">KPI 설계</span><span class="tag">A/B 및 세그먼트 분석</span>
+        </div>
+      </div>
+      <div class="sk">
+        <h4>Certificates</h4>
+        <div class="tags">
+          <span class="tag">빅데이터분석기사</span><span class="tag">SQLD</span><span class="tag">ADsP</span>
+          <span class="tag">TOEIC 990/990</span><span class="tag">OPIc AL</span>
+        </div>
+      </div>
+      <div class="sk">
+        <h4>Awards</h4>
+        <div class="tags">
+          <span class="tag">2020 농식품부 빅데이터 공모전 대상</span>
+          <span class="tag">2016 연세대 DFK 심사위원상</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Yul profile -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot" style="background:var(--dev);box-shadow:0 0 12px var(--dev)"></span> 03 · Engineering</span></div>
+    <div class="prof rise">
+      <div class="idcard dev">
+        <div class="big">하 율</div>
+        <div class="roman">YUL HA</div>
+        <div class="pos">Developer · AI / Automation Engineer</div>
+        <div class="facts">
+          <div class="fact"><span class="k">국적</span><span class="v">대한민국</span></div>
+          <div class="fact"><span class="k">역할</span><span class="v">개발 · 시스템 / 자동화 / AI</span></div>
+          <div class="fact"><span class="k">경력</span><span class="v">개발 2년+ · 현장관리 8년</span></div>
+          <div class="fact"><span class="k">현직</span><span class="v">Wyatt — AI Engineer</span></div>
+          <div class="fact"><span class="k">겸직</span><span class="v">Coupang Eats — Automation</span></div>
+          <div class="fact"><span class="k">학력</span><span class="v">서울사이버대 컴퓨터공학</span></div>
+          <div class="fact"><span class="k">포트폴리오</span><span class="v"><a href="https://yul-portfolio.vercel.app/" target="_blank" rel="noopener">yul-portfolio.vercel.app</a></span></div>
+        </div>
+      </div>
+
+      <div>
+        <h2 style="font-size:clamp(22px,2.6vw,32px)">기술 이전에 비즈니스를 먼저 이해합니다</h2>
+        <p class="sub" style="margin-bottom:22px">
+          시키는 것을 수행하기보다 실무자의 잠재적 니즈를 찾아 개선안을 제안하고,
+          현장 상황에 맞는 자동화 환경을 직접 설계 · 구축하는 엔지니어입니다.
+        </p>
+        <div class="tl dev">
+          <div class="ti now">
+            <div class="when">최근 — 현재</div>
+            <div class="what">AI Engineer <span class="co">· Wyatt</span><span class="badge-now">NEW</span></div>
+            <ul class="desc">
+              <li>AI 기반 제품 개발 — LLM 활용 기능 설계 및 엔지니어링</li>
+              <li>자동화 · 데이터 파이프라인 경험을 AI 프로덕트로 확장</li>
+            </ul>
+          </div>
+          <div class="ti now">
+            <div class="when">2023.12 — 현재 (2년+)</div>
+            <div class="what">Automation Engineer <span class="co">· Coupang Eats Services</span><span class="badge-now">NOW</span></div>
+            <ul class="desc">
+              <li><b>Operations Web System (KR/JP)</b> — Workspace · Dashboard 구축, 생산성 70% 향상</li>
+              <li><b>Assign Automation Bot (KR/JP)</b> — Logistic Regression 적용, 연 4–5억 절감</li>
+              <li><b>AI Data Agent</b> — Text-to-SQL 봇으로 업무 리드타임 80% 단축</li>
+              <li><b>Analyzer Agent</b> — 데이터 수집 자동화 + 감정 분석 프롬프트 엔지니어링</li>
+            </ul>
+          </div>
+          <div class="ti">
+            <div class="when">2023.05 — 2023.11</div>
+            <div class="what">빅데이터 분석가 양성과정 <span class="co">· 960시간</span></div>
+            <ul class="desc">
+              <li>Python · Front/Back-end · Data Analysis · ML/DL 집중 트레이닝</li>
+            </ul>
+          </div>
+          <div class="ti">
+            <div class="when">2015.01 — 2023.04</div>
+            <div class="what">현장 · 시설 관리 <span class="co">· 현대하이텍 외 2사</span></div>
+            <ul class="desc">
+              <li>8년간의 현장 경험 → 실무 맥락을 이해하는 자동화 설계의 기반</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Yul skills -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot" style="background:var(--dev);box-shadow:0 0 12px var(--dev)"></span> 03 · 개발 하율 — Stack &amp; Impact</span></div>
+    <h2 class="rise">기술 활용 능력</h2>
+    <p class="sub rise" style="margin-bottom:22px">프론트부터 인프라, 자동화와 AI까지 혼자서 끝까지 굴릴 수 있는 범위.</p>
+    <div class="skills rise">
+      <div class="sk">
+        <h4>Development &amp; Frameworks</h4>
+        <div class="tags">
+          <span class="tag key">React</span><span class="tag key">TypeScript</span><span class="tag">JavaScript</span>
+          <span class="tag">Tailwind CSS</span><span class="tag">HTML5 / CSS3</span>
+          <span class="tag key">FastAPI</span><span class="tag">Flask</span><span class="tag">Django</span>
+          <span class="tag key">Python</span>
+        </div>
+      </div>
+      <div class="sk">
+        <h4>Data &amp; Infra</h4>
+        <div class="tags">
+          <span class="tag">MySQL</span><span class="tag">SQLite</span><span class="tag">ClickHouse</span><span class="tag">Presto</span>
+          <span class="tag">Git</span><span class="tag">GitHub Actions</span><span class="tag">Docker</span>
+          <span class="tag">AWS</span><span class="tag">Linux</span>
+        </div>
+      </div>
+      <div class="sk">
+        <h4>Automation &amp; AI</h4>
+        <div class="tags">
+          <span class="tag key">Prompt Engineering</span><span class="tag key">ML / DL</span>
+          <span class="tag">Selenium</span><span class="tag">Playwright</span><span class="tag">BeautifulSoup</span>
+          <span class="tag">PyQt</span><span class="tag">Google Apps Script</span>
+        </div>
+      </div>
+    </div>
+    <div class="stats rise">
+      <div class="stat dev"><div class="n">70%</div><div class="l">Operations Web System 생산성 향상</div></div>
+      <div class="stat dev"><div class="n">4–5억</div><div class="l">배정 자동화 봇 연간 비용 절감</div></div>
+      <div class="stat dev"><div class="n">80%</div><div class="l">Text-to-SQL 에이전트 리드타임 단축</div></div>
+      <div class="stat dev"><div class="n">3</div><div class="l">수상 — COUPRIZE · 우수상 · 대상</div></div>
+    </div>
+    <div class="hr rise"></div>
+    <div class="skills rise">
+      <div class="sk">
+        <h4>Awards</h4>
+        <div class="tags">
+          <span class="tag key">2025.12 COUPANG AWARD — COUPRIZE</span>
+          <span class="tag">2023.11 BIDA DEV CONTEST 우수상</span>
+          <span class="tag">2023.11 산학협력 프로젝트 경진대회 대상</span>
+        </div>
+      </div>
+      <div class="sk">
+        <h4>Activities</h4>
+        <div class="tags">
+          <span class="tag">부산시 빅데이터 전문가 양성과정 4기 멘토</span>
+          <span class="tag">디지털혁신아카데미 잡페어 전시</span>
+        </div>
+      </div>
+      <div class="sk">
+        <h4>Side Projects</h4>
+        <div class="tags">
+          <span class="tag">유기동물 입양률 향상 모델</span>
+          <span class="tag">실시간 행동 감지 시스템 (NotiCare)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Synergy -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot"></span> 04 · How We Work</span></div>
+    <h2 class="rise">두 역할이 맞물리는 방식</h2>
+    <p class="sub rise" style="margin-bottom:26px">
+      두 사람 모두 Coupang Eats에서 같은 도메인을 겪었습니다. PM은 문제를 지표로 정의하고,
+      개발은 그 지표를 자동으로 굴러가는 시스템으로 만듭니다.
+    </p>
+
+    <div class="syn rise">
+      <div class="card pm" style="padding:22px">
+        <div class="who" style="margin-bottom:12px">
+          <div class="avatar" style="width:44px;height:44px;flex:0 0 44px;font-size:16px;border-radius:12px">EL</div>
+          <div><div class="nm" style="font-size:18px">이은성 · PM</div>
+          <div class="en">문제 정의 · 지표 설계 · 우선순위</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag key">KPI / 대시보드</span><span class="tag key">비즈니스 임팩트 검증</span>
+          <span class="tag">이해관계자 조율</span><span class="tag">SQL 분석</span>
+        </div>
+      </div>
+
+      <div class="mid">SHARED<br>DOMAIN</div>
+
+      <div class="card dev" style="padding:22px">
+        <div class="who" style="margin-bottom:12px">
+          <div class="avatar" style="width:44px;height:44px;flex:0 0 44px;font-size:16px;border-radius:12px">YH</div>
+          <div><div class="nm" style="font-size:18px">하 율 · Developer</div>
+          <div class="en">시스템 구현 · 자동화 · AI</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag key">웹 시스템 / 대시보드</span><span class="tag key">AI Agent</span>
+          <span class="tag">파이프라인 자동화</span><span class="tag">배포 · 운영</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow rise">
+      <div class="step"><span class="own p">PM</span><div class="no">STEP 01</div><div class="ti2">문제 정의</div><div class="de">현업 이슈를 데이터로 구조화하고 성공 지표를 확정</div></div>
+      <div class="step"><span class="own b">BOTH</span><div class="no">STEP 02</div><div class="ti2">설계 합의</div><div class="de">달성 가능한 범위와 자동화 지점을 함께 스코핑</div></div>
+      <div class="step"><span class="own d">DEV</span><div class="no">STEP 03</div><div class="ti2">구현 · 자동화</div><div class="de">시스템 · 봇 · 에이전트로 실제 동작하게 구축</div></div>
+      <div class="step"><span class="own b">BOTH</span><div class="no">STEP 04</div><div class="ti2">측정 · 개선</div><div class="de">대시보드로 효과를 검증하고 다음 사이클로 반영</div></div>
+    </div>
+  </section>
+
+  <!-- 8 · Contact -->
+  <section class="slide">
+    <div class="rise"><span class="eyebrow"><span class="dot"></span> 05 · Contact</span></div>
+    <h2 class="rise">함께 이야기해요</h2>
+    <p class="sub rise" style="margin-bottom:24px">문의는 아래 채널로 편하게 연락 주세요.</p>
+    <div class="cts rise">
+      <div class="ct pm">
+        <div class="nm2">이은성 <span style="color:var(--tx-3);font-size:13px;font-weight:400">Eunseong Lee</span></div>
+        <div class="rl">BusinessData Analyst · 대한민국</div>
+        <ul>
+          <li><span>EMAIL</span><a href="mailto:silver7castle@gmail.com">silver7castle@gmail.com</a></li>
+          <li><span>PHONE</span><a href="tel:01028289373">+82 10-2828-9373</a></li>
+          <li><span>SITE</span><a href="https://eunseongportfolio.vercel.app" target="_blank" rel="noopener">eunseongportfolio.vercel.app</a></li>
+        </ul>
+      </div>
+      <div class="ct dev">
+        <div class="nm2">하 율 <span style="color:var(--tx-3);font-size:13px;font-weight:400">Yul Ha</span></div>
+        <div class="rl">Developer · AI Engineer · 대한민국</div>
+        <ul>
+          <li><span>EMAIL</span><a href="mailto:checkdata.yul@gmail.com">checkdata.yul@gmail.com</a></li>
+          <li><span>PHONE</span><a href="tel:+821084201217">+82 10-8420-1217</a></li>
+          <li><span>SITE</span><a href="https://yul-portfolio.vercel.app/" target="_blank" rel="noopener">yul-portfolio.vercel.app</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="nav">
+  <div class="dots" id="dots" role="tablist" aria-label="슬라이드 이동"></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span class="counter" id="counter">01 / 08</span>
+    <div class="arrows">
+      <button id="prev" aria-label="이전 슬라이드"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button id="next" aria-label="다음 슬라이드"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dotsEl = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var prog = document.getElementById('prog');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var i = 0;
+  var titles = ['표지','팀 구성','PM 이은성','PM 성과','개발 하율','기술 스택','협업 방식','연락처'];
+
+  slides.forEach(function(_, n){
+    var b = document.createElement('button');
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-label', (n+1) + '. ' + (titles[n] || ''));
+    b.title = titles[n] || ('Slide ' + (n+1));
+    b.addEventListener('click', function(){ go(n); });
+    dotsEl.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsEl.children);
+
+  function pad(n){ return n < 10 ? '0' + n : String(n); }
+
+  function go(n){
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if (n === i) return;
+    slides[i].classList.remove('active');
+    i = n;
+    slides[i].classList.add('active');
+    slides[i].scrollTop = 0;
+    render();
+  }
+
+  function render(){
+    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === i ? 'true' : 'false'); });
+    counter.textContent = pad(i + 1) + ' / ' + pad(slides.length);
+    prog.style.width = ((i + 1) / slides.length * 100) + '%';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  prev.addEventListener('click', function(){ go(i - 1); });
+  next.addEventListener('click', function(){ go(i + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+  });
+
+  // wheel — only advance when the slide isn't mid-scroll
+  var lock = false;
+  document.addEventListener('wheel', function(e){
+    if (lock) return;
+    var s = slides[i];
+    var atTop = s.scrollTop <= 1;
+    var atBottom = s.scrollTop + s.clientHeight >= s.scrollHeight - 1;
+    if (Math.abs(e.deltaY) < 18) return;
+    if (e.deltaY > 0 && atBottom) { lock = true; go(i + 1); }
+    else if (e.deltaY < 0 && atTop) { lock = true; go(i - 1); }
+    if (lock) setTimeout(function(){ lock = false; }, 700);
+  }, {passive:true});
+
+  // touch swipe
+  var x0 = null, y0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    var dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? i + 1 : i - 1);
+    x0 = y0 = null;
+  }, {passive:true});
+
+  // deep link
+  var start = parseInt((location.hash || '').slice(1), 10);
+  if (start >= 1 && start <= slides.length && start !== 1) {
+    slides[0].classList.remove('active');
+    i = start - 1;
+    slides[i].classList.add('active');
+  }
+  render();
+})();
+</script>
+</body>
+</html>
