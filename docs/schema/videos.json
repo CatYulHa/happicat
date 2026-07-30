@@ -1,0 +1,82 @@
+{
+  "collection": "videos",
+  "docId": "{videoId}",
+  "description": "숏폼 고양이 영상. tags 는 업로드 직후 LLM 파이프라인(services/moderation)이 자동 분류해 채운다. moderation.status 가 approved 인 문서만 피드에 노출.",
+  "fields": {
+    "videoId": { "type": "string", "required": true },
+    "videoURL": { "type": "string", "format": "url", "required": true, "desc": "HLS(.m3u8) 또는 MP4. MVP 목업은 MP4 직링크" },
+    "posterURL": { "type": "string", "format": "url", "required": false, "desc": "첫 프레임 썸네일. 로드 실패 시 폴백 이미지로도 사용" },
+    "uploaderUid": { "type": "string", "required": true, "ref": "users.uid" },
+    "uploaderNickname": { "type": "string", "required": true, "desc": "피드 렌더용 비정규화 필드" },
+    "caption": { "type": "string", "maxLength": 150 },
+    "durationSec": { "type": "number", "required": true },
+    "likeCount": { "type": "number", "default": 0 },
+    "viewCount": { "type": "number", "default": 0 },
+    "tipTotal": { "type": "number", "default": 0, "desc": "이 영상이 받은 후원 $MEOW 총합" },
+    "tags": {
+      "type": "array<string>",
+      "default": [],
+      "enumHint": ["꾹꾹이", "먹방", "식빵", "우다다", "그루밍", "골골송", "냥냥펀치", "박스"],
+      "desc": "LLM 자동 분류 결과. 피드 추천/필터의 1차 시그널"
+    },
+    "llm": {
+      "type": "map",
+      "desc": "분류 메타데이터 (재분류 필요 여부 판단용)",
+      "properties": {
+        "model": { "type": "string", "example": "z-ai/glm-5.2" },
+        "confidence": { "type": "number", "range": "0~1" },
+        "classifiedAt": { "type": "timestamp" }
+      }
+    },
+    "moderation": {
+      "type": "map",
+      "desc": "어뷰징/유해 콘텐츠 심사 결과",
+      "properties": {
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "review"], "default": "pending" },
+        "riskLevel": { "type": "number", "range": "0~5" },
+        "category": { "type": "string", "enum": ["none", "nsfw", "spam", "copyright", "animal_abuse", "bot_farming"] },
+        "reason": { "type": "string", "desc": "LLM이 생성한 판정 근거 (백오피스/Slack 알림에 그대로 사용)" },
+        "reviewedBy": { "type": "string", "enum": ["llm", "human"], "default": "llm" },
+        "reviewedAt": { "type": "timestamp" }
+      }
+    },
+    "watchRewardMeow": { "type": "number", "default": 5, "desc": "이 영상 완주 시 지급되는 시청 보상" },
+    "isActive": { "type": "boolean", "default": true },
+    "createdAt": { "type": "timestamp", "required": true }
+  },
+  "indexes": [
+    { "fields": ["moderation.status", "createdAt desc"], "desc": "피드 쿼리(approved만) + 심사 대기열" },
+    { "fields": ["tags array-contains", "likeCount desc"], "desc": "태그별 인기 영상" },
+    { "fields": ["uploaderUid", "createdAt desc"], "desc": "업로드 폭주 어뷰징 탐지" }
+  ],
+  "securityNotes": [
+    "likeCount / viewCount / tipTotal 은 증분 연산(FieldValue.increment)만 허용하고 절대값 write 금지.",
+    "tags · llm · moderation 은 서버 전용 write.",
+    "read 조건: moderation.status == 'approved' && isActive == true"
+  ],
+  "example": {
+    "videoId": "v_20260730_0007",
+    "videoURL": "https://cdn.happicat.app/v/v_20260730_0007.mp4",
+    "posterURL": "https://cdn.happicat.app/v/v_20260730_0007.jpg",
+    "uploaderUid": "u_4b21aa",
+    "uploaderNickname": "치즈냥아빠",
+    "caption": "이불 꾹꾹이 3단 콤보 🐾",
+    "durationSec": 14,
+    "likeCount": 12840,
+    "viewCount": 203114,
+    "tipTotal": 1750,
+    "tags": ["꾹꾹이", "골골송"],
+    "llm": { "model": "z-ai/glm-5.2", "confidence": 0.93, "classifiedAt": "2026-07-30T02:11:00.000Z" },
+    "moderation": {
+      "status": "approved",
+      "riskLevel": 0,
+      "category": "none",
+      "reason": "일반적인 반려묘 일상 영상. 유해 요소 없음.",
+      "reviewedBy": "llm",
+      "reviewedAt": "2026-07-30T02:11:01.000Z"
+    },
+    "watchRewardMeow": 5,
+    "isActive": true,
+    "createdAt": "2026-07-30T02:10:55.000Z"
+  }
+}

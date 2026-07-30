@@ -1,0 +1,84 @@
+{
+  "collection": "transactions",
+  "docId": "{txId}",
+  "description": "토큰 획득/소비 원장(append-only). users.meowBalance 는 이 원장의 파생값이며, 모든 지급은 idempotencyKey 로 중복이 차단된다.",
+  "fields": {
+    "txId": { "type": "string", "required": true },
+    "uid": { "type": "string", "required": true, "ref": "users.uid" },
+    "type": {
+      "type": "string",
+      "required": true,
+      "enum": ["watch_reward", "checkin_reward", "tip_sent", "tip_received", "redeem", "referral", "adjustment"],
+      "desc": "watch_reward=시청보상, checkin_reward=O2O 체크인, tip_*=영상 후원, redeem=기프티콘 교환, adjustment=어뷰징 회수/보정"
+    },
+    "amount": { "type": "number", "required": true, "desc": "부호 있는 정수. 획득 +, 사용 -" },
+    "balanceAfter": { "type": "number", "required": true, "desc": "기록 시점 잔액 스냅샷(정합성 검증용)" },
+    "refType": { "type": "string", "enum": ["video", "location", "reward", "user", "system"], "required": false },
+    "refId": { "type": "string", "required": false, "desc": "videoId / locationId / rewardId / 상대 uid" },
+    "refLabel": { "type": "string", "required": false, "desc": "내역 화면 표시용 비정규화 라벨(예: '고양이별 카페 성수점')" },
+    "idempotencyKey": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "desc": "중복 지급 차단 키. 예: checkin:{uid}:{locationId}:{YYYYMMDD} / watch:{uid}:{videoId} / redeem:{uid}:{clientTxUuid}"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "confirmed", "reversed"],
+      "default": "confirmed",
+      "desc": "pending=어뷰징 심사 대기(보상 홀드), reversed=회수됨"
+    },
+    "meta": {
+      "type": "map",
+      "desc": "감사 근거. moderation 서비스가 판정에 사용하고, 사고 조사 시 그대로 재현 가능해야 함",
+      "properties": {
+        "deviceId": { "type": "string" },
+        "gps": { "type": "map", "properties": { "lat": "number", "lng": "number", "accuracyM": "number" } },
+        "distanceM": { "type": "number", "desc": "스팟 중심으로부터 실제 거리" },
+        "watchedSec": { "type": "number" },
+        "riskLevel": { "type": "number", "range": "0~5" },
+        "moderationCategory": { "type": "string" },
+        "giftcardCode": { "type": "string", "desc": "redeem 시 발급된 기프티콘 코드(목업)" },
+        "ip": { "type": "string" }
+      }
+    },
+    "onchain": {
+      "type": "map",
+      "required": false,
+      "desc": "MVP는 오프체인 원장만 사용. 추후 정산 배치가 txHash 를 채운다",
+      "properties": { "txHash": { "type": "string" }, "settledAt": { "type": "timestamp" } }
+    },
+    "createdAt": { "type": "timestamp", "required": true }
+  },
+  "indexes": [
+    { "fields": ["uid", "createdAt desc"], "desc": "지갑 탭 내역 리스트 (필수)" },
+    { "fields": ["idempotencyKey"], "unique": true, "desc": "중복 지급 차단" },
+    { "fields": ["status", "meta.riskLevel desc", "createdAt desc"], "desc": "홀드된 보상 심사 큐" },
+    { "fields": ["type", "createdAt desc"], "desc": "타입별 지급량 집계(예산 모니터링)" }
+  ],
+  "securityNotes": [
+    "클라이언트 write 전면 금지 — 모든 생성은 서버 트랜잭션에서 users.meowBalance 갱신과 원자적으로 수행.",
+    "append-only: update/delete 금지. 정정은 반대 부호의 adjustment 문서를 추가.",
+    "tip 은 tip_sent(-) / tip_received(+) 두 문서를 같은 idempotencyKey 접두어로 함께 생성."
+  ],
+  "example": {
+    "txId": "tx_01J9ZQ8F3K",
+    "uid": "u_9f3c21",
+    "type": "checkin_reward",
+    "amount": 50,
+    "balanceAfter": 3250,
+    "refType": "location",
+    "refId": "loc_seongsu_catstar",
+    "refLabel": "고양이별 카페 성수점",
+    "idempotencyKey": "checkin:u_9f3c21:loc_seongsu_catstar:20260730",
+    "status": "confirmed",
+    "meta": {
+      "deviceId": "dev_a91f7c2e",
+      "gps": { "lat": 37.5446, "lng": 127.0559, "accuracyM": 12.4 },
+      "distanceM": 21.7,
+      "riskLevel": 0,
+      "moderationCategory": "none"
+    },
+    "createdAt": "2026-07-30T09:12:44.000Z"
+  }
+}

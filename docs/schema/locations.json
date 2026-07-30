@@ -1,0 +1,60 @@
+{
+  "collection": "locations",
+  "docId": "{locationId}",
+  "description": "O2O 체크인 스팟(고양이 카페·팝업·보호소·제휴 매장). radiusM / cooldownHours / dailyCap 이 GPS 어뷰징 방어의 1차 파라미터다.",
+  "fields": {
+    "locationId": { "type": "string", "required": true },
+    "name": { "type": "string", "required": true, "example": "고양이별 카페 성수점" },
+    "category": { "type": "string", "enum": ["cafe", "popup", "shelter", "store", "event"], "required": true },
+    "partnerName": { "type": "string", "required": false, "desc": "제휴사 표기명" },
+    "address": { "type": "string", "required": true },
+    "geo": {
+      "type": "map",
+      "required": true,
+      "properties": { "lat": { "type": "number" }, "lng": { "type": "number" } }
+    },
+    "geohash": { "type": "string", "required": true, "desc": "precision 7 (~150m). 지도 뷰포트 근접 쿼리용. Firestore 단일 인덱스로 범위 스캔" },
+    "radiusM": { "type": "number", "default": 100, "desc": "체크인 허용 반경(m). 이 밖의 좌표는 즉시 거절" },
+    "rewardMeow": { "type": "number", "required": true, "default": 50, "desc": "체크인 성공 시 지급 $MEOW" },
+    "cooldownHours": { "type": "number", "default": 24, "desc": "동일 유저 재체크인 제한 시간" },
+    "dailyCap": { "type": "number", "default": 200, "desc": "스팟 단위 일일 지급 인원 상한(예산 보호)" },
+    "todayCheckinCount": { "type": "number", "default": 0, "desc": "자정 배치로 리셋. dailyCap 비교용" },
+    "requiresPhoto": { "type": "boolean", "default": false, "desc": "true면 GPS + 현장 사진 이중 인증(LLM이 사진 검증)" },
+    "activeFrom": { "type": "timestamp", "required": false },
+    "activeUntil": { "type": "timestamp", "required": false, "desc": "팝업/이벤트 종료 시각" },
+    "isActive": { "type": "boolean", "default": true },
+    "thumbURL": { "type": "string", "format": "url", "required": false },
+    "description": { "type": "string", "maxLength": 200 },
+    "createdAt": { "type": "timestamp", "required": true }
+  },
+  "indexes": [
+    { "fields": ["isActive", "geohash"], "desc": "지도 뷰포트 내 활성 스팟 조회" },
+    { "fields": ["category", "rewardMeow desc"], "desc": "카테고리별 고보상 스팟 정렬" }
+  ],
+  "securityNotes": [
+    "클라이언트는 read only. 모든 write 는 백오피스/서버.",
+    "rewardMeow · radiusM 변경은 감사 로그(adminLogs) 필수 — 보상 파라미터 조작이 곧 예산 사고.",
+    "todayCheckinCount 는 increment 전용."
+  ],
+  "example": {
+    "locationId": "loc_seongsu_catstar",
+    "name": "고양이별 카페 성수점",
+    "category": "cafe",
+    "partnerName": "고양이별",
+    "address": "서울 성동구 연무장길 33 1F",
+    "geo": { "lat": 37.5445, "lng": 127.0557 },
+    "geohash": "wydm9qw",
+    "radiusM": 100,
+    "rewardMeow": 50,
+    "cooldownHours": 24,
+    "dailyCap": 200,
+    "todayCheckinCount": 37,
+    "requiresPhoto": false,
+    "activeFrom": "2026-07-01T00:00:00.000Z",
+    "activeUntil": "2026-09-30T14:59:59.000Z",
+    "isActive": true,
+    "thumbURL": "https://cdn.happicat.app/loc/seongsu_catstar.jpg",
+    "description": "입장 시 체크인하면 아메리카노 1,000원 할인",
+    "createdAt": "2026-06-25T07:00:00.000Z"
+  }
+}

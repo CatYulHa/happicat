@@ -1,0 +1,16 @@
+{
+  "uid": "u_9f3c21",
+  "device_id": "dev_a91f7c2e",
+  "location_id": "loc_seongsu_catstar",
+  "location_name": "고양이별 카페 성수점",
+  "location_geo": { "lat": 37.5445, "lng": 127.0557 },
+  "radius_m": 100,
+  "reward_meow": 50,
+  "cooldown_hours": 24,
+  "reported_geo": { "lat": 37.54462, "lng": 127.05585 },
+  "accuracy_m": 11.8,
+  "distance_m": 18.6,
+  "fix_elapsed_ms": 1340,
+  "accounts_on_device": 1,
+  "checkins_last_hour": 1
+}

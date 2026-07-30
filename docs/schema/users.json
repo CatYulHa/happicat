@@ -1,0 +1,67 @@
+{
+  "collection": "users",
+  "docId": "{uid}",
+  "description": "HappiCat 유저. 잔액(meowBalance)은 클라이언트가 직접 쓰지 않고 transactions 기록의 결과로만 갱신된다(서버 트랜잭션/함수 전용).",
+  "fields": {
+    "uid": { "type": "string", "required": true, "desc": "Auth UID. 문서 ID와 동일" },
+    "nickname": { "type": "string", "required": true, "maxLength": 20 },
+    "photoURL": { "type": "string", "format": "url", "required": false },
+    "walletAddress": {
+      "type": "string",
+      "required": true,
+      "pattern": "^0x[a-fA-F0-9]{40}$",
+      "desc": "MVP에서는 커스터디 지갑을 자동 생성해 매핑. 이후 외부 지갑 연결 시 교체"
+    },
+    "walletType": { "type": "string", "enum": ["custodial", "external"], "default": "custodial" },
+    "meowBalance": { "type": "number", "required": true, "default": 0, "desc": "현재 보유 $MEOW (정수). transactions 합계와 항상 일치해야 함" },
+    "lifetimeEarned": { "type": "number", "default": 0, "desc": "누적 획득량 (감사/등급용)" },
+    "lifetimeSpent": { "type": "number", "default": 0, "desc": "누적 사용량" },
+    "deviceIds": {
+      "type": "array<string>",
+      "default": [],
+      "desc": "다계정 어뷰징 탐지용 디바이스 지문 목록. 동일 deviceId가 N개 계정에 걸치면 risk 신호"
+    },
+    "riskScore": { "type": "number", "default": 0, "range": "0~100", "desc": "moderation 서비스가 갱신하는 누적 위험도" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "limited", "banned"],
+      "default": "active",
+      "desc": "limited = 보상 지급만 중단(읽기는 허용)"
+    },
+    "lastCheckinAt": { "type": "timestamp", "required": false, "desc": "쿨다운/텔레포트 속도 계산 기준" },
+    "lastCheckinGeo": {
+      "type": "map",
+      "required": false,
+      "desc": "직전 체크인 좌표. 이동속도 기반 가짜 GPS 탐지에 사용",
+      "properties": { "lat": "number", "lng": "number" }
+    },
+    "createdAt": { "type": "timestamp", "required": true },
+    "updatedAt": { "type": "timestamp", "required": true }
+  },
+  "indexes": [
+    { "fields": ["status", "riskScore desc"], "desc": "백오피스 위험 유저 리스트" },
+    { "fields": ["deviceIds array-contains", "createdAt desc"], "desc": "다계정 조회" }
+  ],
+  "securityNotes": [
+    "클라이언트 write 허용 필드: nickname, photoURL 만.",
+    "meowBalance / lifetime* / riskScore / status 는 서버(Cloud Functions·FastAPI)만 write.",
+    "walletAddress 는 최초 생성 시 1회만 write, 이후 immutable."
+  ],
+  "example": {
+    "uid": "u_9f3c21",
+    "nickname": "냥집사율",
+    "photoURL": "https://cdn.happicat.app/avatar/u_9f3c21.png",
+    "walletAddress": "0x1f4ad3b95c7e2016b0a5d3f8b1c9e77425d69ac2",
+    "walletType": "custodial",
+    "meowBalance": 3250,
+    "lifetimeEarned": 6400,
+    "lifetimeSpent": 3150,
+    "deviceIds": ["dev_a91f7c2e"],
+    "riskScore": 8,
+    "status": "active",
+    "lastCheckinAt": "2026-07-30T09:12:44.000Z",
+    "lastCheckinGeo": { "lat": 37.5262, "lng": 127.0286 },
+    "createdAt": "2026-06-02T04:31:10.000Z",
+    "updatedAt": "2026-07-30T09:12:44.000Z"
+  }
+}

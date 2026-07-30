@@ -1,0 +1,245 @@
+@import 'tailwindcss';
+
+/* ══════════════════════════════════════════════════════════════
+   happi cat — 스케치 디자인 시스템
+   원칙: 형광/네온 없음. 종이 배경 + 잉크 테두리 + 뭉툭한 라운드 +
+        손으로 놓은 듯한 살짝 비뚤어진 카드.
+   색은 크레용처럼 채도를 낮춘 5색만 쓴다.
+   ══════════════════════════════════════════════════════════════ */
+@theme {
+  /* 종이 */
+  --color-paper: #f6f1e6;
+  --color-paper-2: #fffdf8; /* 카드 */
+  --color-paper-3: #ebe4d4; /* 눌린 패널 */
+
+  /* 잉크(글씨·테두리) */
+  --color-ink: #34302a;
+  --color-ink-2: #6d665b;
+  --color-ink-3: #a1998b;
+  --color-line: #d9d0bd;
+
+  /* 크레용 5색 — 채도를 낮춰 형광으로 보이지 않게 */
+  --color-honey: #dda641; /* $MEOW 토큰 */
+  --color-honey-2: #b7822b;
+  --color-sage: #7d9e6a; /* 획득 */
+  --color-clay: #c4705a; /* 사용/실패 */
+  --color-sky: #7f9cbf; /* 정보 */
+  --color-lilac: #a08cbd; /* 보조 */
+
+  --font-sans: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Malgun Gothic',
+    '맑은 고딕', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  /* 손글씨. 폰트 로드 실패 시 고딕으로 자연 폴백 */
+  --font-hand: 'Gaegu', 'Pretendard', 'Malgun Gothic', cursive;
+
+  --ease-out-soft: cubic-bezier(0.22, 0.9, 0.3, 1);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #e9e2d2;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+/* ─────────────── 종이 바탕 ─────────────── */
+
+/** 연필 점묘가 살짝 보이는 종이 */
+@utility paper {
+  background-color: var(--color-paper);
+  background-image: radial-gradient(rgba(52, 48, 42, 0.055) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/** 모눈 노트 */
+@utility paper-grid {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(rgba(52, 48, 42, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52, 48, 42, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* ─────────────── 스케치 요소 ─────────────── */
+
+/** 손으로 그린 듯 사방 반지름이 다른 카드 */
+@utility sketch {
+  border: 2.5px solid var(--color-ink);
+  border-radius: 26px 30px 24px 32px / 30px 24px 32px 26px;
+  box-shadow: 3px 3px 0 rgba(52, 48, 42, 0.14);
+}
+
+/** 반지름이 균일한 버전 (그리드 안에서 정돈되게) */
+@utility sketch-soft {
+  border: 2.5px solid var(--color-ink);
+  border-radius: 24px;
+  box-shadow: 3px 3px 0 rgba(52, 48, 42, 0.12);
+}
+
+/** 테두리를 옅게 — 정보 밀도가 높은 리스트용 */
+@utility sketch-thin {
+  border: 2px solid var(--color-line);
+  border-radius: 20px 22px 18px 24px / 22px 18px 24px 20px;
+}
+
+@utility sketch-pill {
+  border: 2.5px solid var(--color-ink);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0 rgba(52, 48, 42, 0.14);
+}
+
+/** 쿠폰(기프티콘)용 점선 */
+@utility sketch-dashed {
+  border: 2.5px dashed var(--color-ink);
+  border-radius: 26px 22px 28px 20px / 22px 28px 20px 26px;
+}
+
+/** 눌리는 느낌 — 그림자가 줄고 살짝 내려간다 */
+@utility sketch-press {
+  transition:
+    transform 0.12s var(--ease-out-soft),
+    box-shadow 0.12s var(--ease-out-soft);
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 rgba(52, 48, 42, 0);
+  }
+}
+
+/** 손으로 놓은 듯한 미세한 기울기 */
+@utility tilt-l {
+  transform: rotate(-0.9deg);
+}
+@utility tilt-r {
+  transform: rotate(0.9deg);
+}
+
+/* `font-hand` 유틸은 @theme 의 --font-hand 에서 자동 생성된다.
+   손으로 그은 밑줄은 <Squiggle /> 컴포넌트(components/MeowIcon.tsx)를 쓴다. */
+
+/* ─────────────── 애니메이션 ─────────────── */
+
+@keyframes pop {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  40% {
+    transform: scale(1.3) rotate(-6deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) rotate(-4deg) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-10px) rotate(2deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-62px) rotate(-3deg) scale(1.05);
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) rotate(-1.5deg) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-0.8deg);
+  }
+}
+/** 연필로 두 번 덧그린 듯 흔들리는 강조 */
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-1deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+}
+@keyframes ping-ring {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@utility animate-pop {
+  animation: pop 0.42s var(--ease-out-soft);
+}
+@utility animate-float-up {
+  animation: float-up 1.2s var(--ease-out-soft) forwards;
+}
+@utility animate-sheet-in {
+  animation: sheet-in 0.34s var(--ease-out-soft);
+}
+@utility animate-fade-in {
+  animation: fade-in 0.24s ease-out;
+}
+@utility animate-toast-in {
+  animation: toast-in 0.28s var(--ease-out-soft) forwards;
+}
+@utility animate-wobble {
+  animation: wobble 2.4s ease-in-out infinite;
+}
+@utility animate-ping-ring {
+  animation: ping-ring 1.8s ease-out infinite;
+}
+
+/* ─────────────── 기타 ─────────────── */
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/** 세로 스와이프 피드 */
+@utility snap-feed {
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
