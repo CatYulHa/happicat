@@ -9,8 +9,10 @@
 | --- | --- | --- |
 | 1 | 숏폼 피드 (스와이프 + 시청 보상 + 토큰 후원) | `apps/web/src/tabs/FeedTab.tsx` |
 | 2 | O2O 지도 & GPS 스팟 인증 | `apps/web/src/tabs/MapTab.tsx` |
-| 3 | 토큰 지갑 & 리워드 교환 | `apps/web/src/tabs/WalletTab.tsx` |
+| 3 | 랭킹 & 고양이 카드 컬렉션 | `apps/web/src/tabs/RankTab.tsx` |
+| 4 | 토큰 지갑 & 리워드 교환 | `apps/web/src/tabs/WalletTab.tsx` |
 | + | LLM 어뷰징 필터 + Slack 모니터링 | `services/moderation/` |
+| + | 온체인 $MEOW 토큰 (GIWA Sepolia) | `onchain/contracts/MeowToken.sol` |
 
 ## 빠른 실행
 
@@ -29,6 +31,31 @@ python -m venv .venv
 .venv/Scripts/python -m uvicorn app.main:app --reload --port 8080
 ```
 
+## 배포 (Cloudflare Pages)
+
+GitHub 저장소를 연결하면 push 마다 자동 배포된다. Cloudflare 대시보드 → **Workers & Pages → Create → Pages → Connect to Git** 에서 `CatYulHa/happicat` 선택 후:
+
+| 설정 | 값 |
+| --- | --- |
+| Framework preset | `Vite` (없으면 None) |
+| **Root directory** | `apps/web` ← 모노레포라 반드시 지정 |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+
+**환경 변수**(Settings → Environment variables, Production/Preview 양쪽):
+
+```
+VITE_KAKAO_MAP_KEY=<카카오 JavaScript 키>
+VITE_MEOW_CONTRACT_ADDRESS=0x022cc4a357c764a59b0b2820d3c64f5df8043464
+VITE_GIWA_EXPLORER_URL=https://sepolia-explorer.giwa.io
+```
+
+`VITE_MODERATION_API_URL` 은 **넣지 않는다** — 어뷰징 판정 백엔드는 로컬 전용이라 배포본에서는 호출을 건너뛴다(값이 없으면 자동으로 비활성).
+
+배포 후 **카카오 개발자 콘솔 → 플랫폼 키 → JavaScript 키 → JavaScript SDK 도메인**에 배포 주소(`https://<프로젝트>.pages.dev`)를 추가해야 지도가 실제 카카오맵으로 뜬다. 추가하지 않으면 손그림 폴백 지도로 표시된다.
+
+`apps/web/public/_redirects` 가 SPA 폴백을 처리한다.
+
 ### 목업 체험 순서
 
 1. **피드** — 위아래로 스와이프. 5초 이상 보면 우측 링 게이지가 차고 `+5 MEOW` 가 적립된다.
@@ -36,7 +63,8 @@ python -m venv .venv
 2. **지도** — 스팟 카드/마커를 탭 → "GPS 인증하고 50 MEOW 받기".
    데스크톱에서는 주소창에 **`?mockGps=1`** 을 붙이면(`http://localhost:5173/?mockGps=1`) 스팟 근처 좌표가 주입되어 성공 플로우를 볼 수 있다.
    파라미터 없이 실제 위치로 시도하면 "OOm 더 가까이 가세요" 거절 플로우가 나온다.
-3. **지갑** — 잔액/지갑주소 카드, 리워드 샵에서 **스타벅스 아메리카노(3,000 MEOW)** 교환 → 목업 기프티콘(바코드+코드) 발급, 하단에 원장 내역 누적.
+3. **랭킹** — 내 순위 카드 + 리더보드, 세그먼트를 **🐱 내 카드**로 바꾸면 지금까지 받은 보상이 고양이 카드로 쌓여 있다. 카드를 누르면 뒤집혀 어떤 보상에서 나왔는지(원장 멱등 키까지) 보인다.
+4. **지갑** — 잔액/지갑주소 카드, 리워드 샵에서 **스타벅스 아메리카노(3,000 MEOW)** 교환 → 목업 기프티콘(바코드+코드) 발급, 하단에 원장 내역 누적.
 
 잔액과 내역은 `localStorage` 에 저장되어 새로고침에도 유지된다. 지갑 탭 하단 "데모 초기화"로 리셋.
 
@@ -49,7 +77,7 @@ happicat/
 │  └─ schema/               # ── Step 1: NoSQL 스키마 (users/videos/locations/transactions)
 ├─ apps/web/                # ── Step 2: Vite + React 19 + TS + Tailwind v4
 │  └─ src/
-│     ├─ tabs/              # FeedTab / MapTab / WalletTab
+│     ├─ tabs/              # FeedTab / MapTab / RankTab / WalletTab
 │     ├─ components/        # PhoneFrame, TabBar, BottomSheet, 아이콘
 │     ├─ lib/               # db(어댑터), geo(haversine·GPS), kakao(SDK 로더), moderation(백엔드 호출)
 │     ├─ store/AppState.tsx # 잔액·원장·좋아요 상태 + 도메인 액션

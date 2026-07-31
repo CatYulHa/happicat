@@ -98,6 +98,19 @@ export function WalletIcon({ className = 'w-5 h-5' }: { className?: string }) {
   )
 }
 
+/** 랭킹 탭 — 트로피 */
+export function TrophyIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...STROKE}>
+      <path d="M7.2 4.2h9.6v5.2c0 2.7-2.1 4.8-4.8 4.8s-4.8-2.1-4.8-4.8z" />
+      <path d="M7.2 6.1H5c-.7 0-1.2.6-1.1 1.3.3 2 1.6 3.2 3.4 3.3" />
+      <path d="M16.8 6.1H19c.7 0 1.2.6 1.1 1.3-.3 2-1.6 3.2-3.4 3.3" />
+      <path d="M12 14.2v3.4" />
+      <path d="M8.6 20.1h6.8c0-1.4-1-2.5-2.4-2.5h-2c-1.4 0-2.4 1.1-2.4 2.5z" />
+    </svg>
+  )
+}
+
 export function PlayIcon({ className = 'w-16 h-16' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...STROKE} strokeWidth={1.8}>

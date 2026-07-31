@@ -4,6 +4,7 @@ import { TabBar } from './components/TabBar'
 import type { TabKey } from './components/TabBar'
 import { FeedTab } from './tabs/FeedTab'
 import { MapTab } from './tabs/MapTab'
+import { RankTab } from './tabs/RankTab'
 import { WalletTab } from './tabs/WalletTab'
 import { PawIcon } from './components/MeowIcon'
 import { useApp } from './store/AppState'
@@ -19,6 +20,7 @@ export default function App() {
           <main className="h-full">
             {tab === 'feed' && <FeedTab />}
             {tab === 'map' && <MapTab />}
+            {tab === 'rank' && <RankTab />}
             {tab === 'wallet' && <WalletTab />}
           </main>
           <TabBar active={tab} onChange={setTab} />

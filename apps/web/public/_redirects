@@ -1,0 +1,4 @@
+# Cloudflare Pages — SPA 폴백
+# 정적 자산이 먼저 매칭되고, 그 외 경로는 전부 index.html 로 보낸다.
+# (?mockGps=1 같은 쿼리는 그대로 유지된다)
+/*  /index.html  200

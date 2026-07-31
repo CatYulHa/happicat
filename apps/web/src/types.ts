@@ -159,6 +159,41 @@ export interface TxResult {
   tx?: Transaction
 }
 
+/* ─────────────── 랭킹 & 카드 컬렉션 ─────────────── */
+
+/** 리더보드 한 줄. 실서비스에서는 transactions 집계 뷰(또는 주간 스냅샷 컬렉션)에서 만든다 */
+export interface RankEntry {
+  uid: string
+  nickname: string
+  /** 누적 획득 $MEOW — 랭킹 정렬 기준 */
+  lifetimeEarned: number
+  /** 보유 고양이 카드 수 */
+  cardCount: number
+  /** 연속 출석일 */
+  streakDays: number
+  isMe?: boolean
+}
+
+/** 카드 희귀도 — 한 번에 받은 $MEOW 양으로 결정된다 */
+export type CardRarity = 'normal' | 'rare' | 'epic' | 'legend'
+
+/**
+ * 획득 트랜잭션 1건 = 고양이 카드 1장.
+ * 별도 컬렉션을 두지 않고 원장에서 파생시킨다 — 카드가 곧 "이 보상을 실제로 받았다"는 증거다.
+ */
+export interface CatCardData {
+  cardId: string
+  /** 카드 외형을 결정하는 시드 (txId 기반 — 같은 보상은 항상 같은 고양이) */
+  seed: string
+  amount: number
+  rarity: CardRarity
+  title: string
+  source: string
+  earnedAt: ISODate
+  txType: TxType
+  idempotencyKey: string
+}
+
 /* ─────────────── rewards (MVP 목업 전용) ─────────────── */
 
 /** 리워드 샵 상품. 실서비스에서는 `rewards` 컬렉션 + 기프티콘 발행 API 연동 */

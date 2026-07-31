@@ -1,11 +1,12 @@
 import type { ReactElement } from 'react'
-import { PawIcon, PinIcon, WalletIcon } from './MeowIcon'
+import { PawIcon, PinIcon, TrophyIcon, WalletIcon } from './MeowIcon'
 
-export type TabKey = 'feed' | 'map' | 'wallet'
+export type TabKey = 'feed' | 'map' | 'rank' | 'wallet'
 
 const TABS: { key: TabKey; label: string; Icon: (p: { className?: string }) => ReactElement }[] = [
   { key: 'feed', label: '피드', Icon: PawIcon },
   { key: 'map', label: '지도', Icon: PinIcon },
+  { key: 'rank', label: '랭킹', Icon: TrophyIcon },
   { key: 'wallet', label: '지갑', Icon: WalletIcon },
 ]
 
