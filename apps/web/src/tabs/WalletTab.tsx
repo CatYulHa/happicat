@@ -54,6 +54,7 @@ export function WalletTab() {
           <Squiggle className="mt-0.5 h-2 w-40" />
 
           <WalletAddress address={user.walletAddress} />
+          <OnchainBadge />
 
           <div className="mt-4 grid grid-cols-2 gap-2">
             <div className="sketch-thin bg-sage/12 px-3 py-2">
@@ -230,6 +231,39 @@ function WalletAddress({ address }: { address: string }) {
       {copied ? '주소가 복사되었어요' : short}
       <CopyIcon className="h-3.5 w-3.5" />
     </button>
+  )
+}
+
+/* ───────────────────────── 온체인 배지 ───────────────────────── */
+
+/**
+ * GIWA Sepolia 에 배포·검증된 $MEOW 컨트랙트로 가는 링크.
+ * 지갑 연결은 하지 않는다 — 목업 잔액과 온체인 잔액이 섞이지 않도록 읽기 전용 링크만 둔다.
+ * VITE_MEOW_CONTRACT_ADDRESS 가 없으면 아무것도 렌더하지 않는다.
+ */
+function OnchainBadge() {
+  const address = import.meta.env.VITE_MEOW_CONTRACT_ADDRESS
+  if (!address) return null
+
+  const explorer = (import.meta.env.VITE_GIWA_EXPLORER_URL ?? 'https://sepolia-explorer.giwa.io').replace(
+    /\/$/,
+    '',
+  )
+  const short = `${address.slice(0, 6)}…${address.slice(-4)}`
+
+  return (
+    <a
+      href={`${explorer}/address/${address}`}
+      target="_blank"
+      rel="noreferrer"
+      className="sketch-press border-line text-ink-2 mt-1.5 flex w-fit items-center gap-1.5 rounded-full border-2 bg-paper-3 px-2.5 py-1 text-[11px]"
+      title="GIWA Sepolia 에 배포·검증된 $MEOW 컨트랙트"
+    >
+      <span className="bg-sage h-1.5 w-1.5 rounded-full" />
+      <span className="font-hand text-base leading-none">GIWA Sepolia</span>
+      <span className="font-mono">{short}</span>
+      <span className="text-ink-3">↗</span>
+    </a>
   )
 }
 

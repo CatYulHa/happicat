@@ -1,0 +1,19 @@
+{
+  "network": "GIWA Sepolia",
+  "chainId": 91342,
+  "contractName": "MeowToken",
+  "address": "0x022cc4a357c764a59b0b2820d3c64f5df8043464",
+  "deployer": "0x95e97f6bEb7DAee7a8dC369AeFe56135Fc7Fb814",
+  "deploymentTx": "0x7b598278fbe2e4b4ea289cd1c3319ecb1d9b2121e1edf91baa89f938af31d962",
+  "blockNumber": 32152507,
+  "gasUsed": 1607536,
+  "compilerVersion": "v0.8.28+commit.7893614a",
+  "evmVersion": "paris",
+  "optimizer": {
+    "enabled": false,
+    "runs": 200
+  },
+  "license": "MIT",
+  "explorer": "https://sepolia-explorer.giwa.io/address/0x022cc4a357c764a59b0b2820d3c64f5df8043464",
+  "deployedAt": "2026-07-31T11:33:44.758Z"
+}

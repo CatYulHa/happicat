@@ -73,6 +73,42 @@ happicat/
 반경 초과·텔레포트처럼 확실한 건 결정론적 규칙이 즉시 잡고(LLM이 뒤집을 수 없음), 정성적 위험은 LLM이 판정한다.
 LLM 응답은 반드시 Pydantic(`RiskAssessment`)으로 검증하며, 실패 시 규칙 판정으로 폴백해 **LLM 장애가 서비스 장애가 되지 않는다.**
 
+## On-chain — $MEOW 토큰 (GIWA Sepolia)
+
+$MEOW ERC-20 컨트랙트를 GIWA 테스트넷에 배포하고 익스플로러에서 **검증(Verified)** 했다.
+
+| 항목 | 값 |
+| --- | --- |
+| **컨트랙트** | [`0x022cc4a357c764a59b0b2820d3c64f5df8043464`](https://sepolia-explorer.giwa.io/address/0x022cc4a357c764a59b0b2820d3c64f5df8043464) ✅ Verified (full match) |
+| 네트워크 | GIWA Sepolia (OP Stack L2) · Chain ID `91342` |
+| 토큰 | happi cat MEOW (`MEOW`) · 18 decimals · 사전 발행 없음 |
+| 컴파일러 | `v0.8.28+commit.7893614a` · evm `paris` · 옵티마이저 off |
+| 배포 tx | [`0x7b598278…af31d962`](https://sepolia-explorer.giwa.io/tx/0x7b598278fbe2e4b4ea289cd1c3319ecb1d9b2121e1edf91baa89f938af31d962) (block 32,152,507) |
+| 소스 | [`onchain/contracts/MeowToken.sol`](onchain/contracts/MeowToken.sol) |
+
+### 오프체인 원장과 온체인이 같은 멱등 키를 쓴다
+
+이 프로젝트에서 온체인이 하는 일은 "토큰을 만든다"가 아니라 **"중복 지급을 한 번 더 막는다"** 이다.
+
+```
+오프체인 원장  transactions.idempotencyKey = "checkin:u_9f3c21:loc_seongsu_catstar:20260730"
+                              ↓ keccak256
+온체인        usedKey[0x52945cde…7eb5ae] = true   → 같은 키로 두 번째 mintReward 는 revert
+```
+
+정산 배치가 재실행되거나 트랜잭션이 재전송돼도 토큰이 두 번 발행되지 않는다. 실제로 확인한 결과다.
+
+| 확인 | 트랜잭션 |
+| --- | --- |
+| 체크인 보상 50 MEOW 발행 | [`0x2af267af…fb9b81bd`](https://sepolia-explorer.giwa.io/tx/0x2af267afb8e10b749baea5bbfd058d8c7cff4eee6da337db565e3bf5fb9b81bd) |
+| **같은 키로 재지급 → `DuplicateKey` revert** | 온체인 상태 변경 없음 (simulate 로 확인, 가스 0) |
+
+`reason` 파라미터에 원장 키 원문을 남기므로 익스플로러 이벤트 로그에서 어떤 체크인에 대한 지급인지 사람이 바로 읽을 수 있고, `keyOf(string)` 으로 누구나 해시를 재현해 대조할 수 있다.
+
+단위: 오프체인은 정수 MEOW(예: `3250`), 온체인은 18 decimals → **`1 MEOW = 1e18`**.
+
+배포·검증 방법과 툴체인 선택 이유(네이티브 바이너리 없는 solc-js + viem)는 [`onchain/README.md`](onchain/README.md) 참고.
+
 ## AI(LLM)가 필요한 곳 / 필요 없는 곳
 
 목업을 만들면서 **AI를 실제로 써야 하는 지점만** 남기고 나머지는 규칙 코드로 내렸다. 판단 기준은 세 가지 —

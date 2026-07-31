@@ -45,8 +45,12 @@
     "onchain": {
       "type": "map",
       "required": false,
-      "desc": "MVP는 오프체인 원장만 사용. 추후 정산 배치가 txHash 를 채운다",
-      "properties": { "txHash": { "type": "string" }, "settledAt": { "type": "timestamp" } }
+      "desc": "정산 배치가 채우는 온체인 반영 결과. $MEOW 컨트랙트는 GIWA Sepolia(chainId 91342)의 0x022cc4a357c764a59b0b2820d3c64f5df8043464 이며, mintReward(to, amount, keccak256(idempotencyKey), idempotencyKey) 로 지급한다. 같은 키는 컨트랙트에서도 한 번만 성공하므로 배치를 재실행해도 중복 발행되지 않는다. 단위: 1 MEOW = 1e18",
+      "properties": {
+        "txHash": { "type": "string" },
+        "settledAt": { "type": "timestamp" },
+        "contract": { "type": "string", "example": "0x022cc4a357c764a59b0b2820d3c64f5df8043464" }
+      }
     },
     "createdAt": { "type": "timestamp", "required": true }
   },
